@@ -1,0 +1,12 @@
+module.exports.userService = require('./user.service')
+module.exports.authService = require('./auth.service')
+module.exports.emailService = require('./email.service')
+module.exports.buildingService = require('./building.service')
+module.exports.roomService = require('./room.service')
+module.exports.tenantService = require('./tenants.service')
+module.exports.chargesService = require('./charges.service')
+module.exports.companiesService = require('./companies.service')
+module.exports.rolesService = require('./roles.service')
+module.exports.leaseService = require('./leaseAgreement.service')
+
+module.exports.archiveTenantService = require('./archiveTenant.service')

@@ -1,0 +1,298 @@
+components:
+  schemas:
+    User: 
+      type: object
+      properties:
+        id:
+          type: integer 
+        firstname: 
+          type: string
+        lastname: 
+          type: string
+        phoneNumber:
+          type: string
+        email: 
+          type: string
+          format: email
+          description: Must be unique
+        password: 
+          type: string
+          format: password
+          minLength: 8
+          description: Password must contain at least 1 capital letter, 1 number, and 1 special character
+        isPasswordResetRequired: 
+          type: boolean
+          description: True if the password needs to be reset after the first login, false if already reset
+        createdAt: 
+          type: string
+          format: date
+        updatedAt: 
+          type: string
+          format: date
+      example:
+        id: 5
+        email: fake@example.com
+        firstname: John
+        lastname: Doe
+        phoneNumber: +32049484848
+
+    Token: 
+      type: object
+      properties:
+        userId: 
+          type: integer
+          description: Foreign key referencing the "users" table
+          x-$ref: '#/components/schemas/User'
+        token: 
+          type: string
+        expires: 
+          type: string
+          format: date-time
+      example:
+        token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ZWJhYzUzNDk1NGI1NDEzOTgwNmMxMTIiLCJpYXQiOjE1ODkyOTg0ODQsImV4cCI6MTU4OTMwMDI4NH0.m1U63blB0MLej_WfB7yC2FTMnCziif9X8yzwDEfJXAg
+        expires: 2020-05-12T16:18:04.793Z
+
+    Building: 
+      type: object
+      properties:
+        id:
+          type: integer 
+        name:
+          type: string
+          description: Name of the building
+        addressStreet: 
+          type: string
+        addressNumber:
+          type: string
+        addressCity:
+          type: string
+        addressPostalCode:
+          type: string
+        addressCountry:
+          type: string
+        electricity:
+          type: string
+          description: Electricity meter of the building
+        water:
+          type: string
+          description: Water meter of the building
+        gaz:
+          type: string
+          description: Gaz meter of the building
+        doorCode: 
+          type: string
+          description: Access code of the building
+        iban: 
+          type: string
+        bic: 
+          type: string
+
+    Charge: 
+      type: object
+      properties: 
+        type: string
+        description: Name of the Utilities charges
+
+    Company:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 50
+        email:
+          type: string
+          format: email
+        siren:
+          type: string
+          maxLength: 50
+        tva:
+          type: string
+          maxLength: 50
+        addressStreet:
+          type: string
+          maxLength: 50
+        addressNumber:
+          type: string
+          maxLength: 50
+        addressPostCode:
+          type: string
+          maxLength: 50
+        addressCity:
+          type: string
+          maxLength: 50
+        addressCountry:
+          type: string
+          maxLength: 50
+      required:
+        - name
+        - email
+        - tva
+        - addressStreet
+        - addressNumber
+        - addressPostCode
+        - addressCity
+        - addressCountry
+      uniqueProperties:
+        - email
+    Room:
+      type: object
+      properties:
+        roomNumber:
+          type: string
+          maxLength: 55
+        status:
+          type: string
+          enum:
+            - rented
+            - free
+            - available from
+        availableFrom:
+          type: string
+          format: date
+        type:
+          type: string
+          enum:
+            - room
+            - flat
+            - studio
+            - office
+            - commerce
+        rent:
+          type: number
+          minimum: 0
+        charges:
+          type: number
+          minimum: 0
+        totalRent:
+          type: number
+          readOnly: true
+        deposit:
+          type: number
+          readOnly: true
+        rentReview:
+          type: string
+          format: date
+        specialConditions:
+          type: string
+        doorCode:
+          type: string
+      required:
+        - roomNumber
+        - type
+        - rent
+        - doorCode
+    
+    Tenant:
+      type: object
+      properties:
+        firstname:
+          type: string
+          maxLength: 50
+        lastname:
+          type: string
+          maxLength: 50
+        fullname:
+          type: string
+          readOnly: true
+        email:
+          type: string
+          maxLength: 55
+          format: email
+        deposit:
+          type: number
+          minimum: 0
+        birthdate:
+          type: string
+          format: date
+        idNumber:
+          type: string
+          maxLength: 155
+        phoneNumber:
+          type: string
+          maxLength: 50
+        addressStreet:
+          type: string
+          maxLength: 50
+        addressNumber:
+          type: string
+          maxLength: 50
+        addressCity:
+          type: string
+          maxLength: 50
+        addressPostalCode:
+          type: string
+          maxLength: 50
+        addressCountry:
+          type: string
+          maxLength: 50
+        arrival:
+          type: string
+          format: date
+        contractStart:
+          type: string
+          format: date
+        contractEnd:
+          type: string
+          format: date
+      required:
+        - firstname
+        - lastname
+        - email
+
+    Error:
+      type: object
+      properties:
+        code:
+          type: number
+        message:
+          type: string
+    
+    DuplicateEmail:
+      description: Email already taken
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 400
+            message: Email already taken
+
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 401
+            message: Please authenticate
+
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 403
+            message: Forbidden
+
+    NotFound:
+      description: Not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 404
+            message: Not found
+    
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 400
+            message: Inputs are not valid
