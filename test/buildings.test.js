@@ -6,6 +6,7 @@ jest.mock('../services/building.service', () => ({
     createBuilding: jest.fn(),
   }));
   
+  
   describe('Building Controllers', () => {
     it('should create a new building', async () => {
       // Mock the service function to return a building object
